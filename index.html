@@ -73,20 +73,15 @@
 
   <body class="bg-background-light dark:bg-background-dark font-display text-[#0d161c] dark:text-slate-100">
     <div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto overflow-x-hidden snow-bg dark:bg-background-dark">
-      <!-- Header -->
-      <header class="sticky top-0 z-30 glass-effect px-4 py-4 flex items-center justify-between">
-        <button
-          class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/50 dark:hover:bg-slate-800 transition-colors"
-          type="button"
-          aria-label="返回"
-          onclick="history.back()"
-        >
-          <span class="material-symbols-outlined">arrow_back_ios_new</span>
-        </button>
+      <!-- Header (箭頭已移除，標題置中) -->
+      <header class="sticky top-0 z-30 glass-effect px-4 py-4 grid grid-cols-3 items-center">
+        <div class="w-10 h-10"></div>
 
-        <h1 class="text-lg font-bold tracking-tight text-[#0d161c] dark:text-white">北海道冬旅清單</h1>
+        <h1 class="text-lg font-bold tracking-tight text-[#0d161c] dark:text-white text-center">
+          北海道冬旅清單
+        </h1>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 justify-end">
           <button
             id="themeToggle"
             class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/50 dark:hover:bg-slate-800 transition-colors"
@@ -146,7 +141,10 @@
             <div class="mt-4 flex flex-col gap-3">
               <div class="flex gap-2">
                 <div class="relative flex-1">
-                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#4b799b] dark:text-slate-400 text-[20px]">search</span>
+                  <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#4b799b] dark:text-slate-400 text-[20px]"
+                    >search</span
+                  >
                   <input
                     id="searchInput"
                     type="text"
@@ -166,9 +164,15 @@
               </div>
 
               <div class="flex gap-2">
-                <button data-filter="all" class="filterBtn chip flex-1 rounded-xl px-3 py-2 text-sm font-semibold bg-white/70 dark:bg-slate-900">全部</button>
-                <button data-filter="open" class="filterBtn chip flex-1 rounded-xl px-3 py-2 text-sm font-semibold bg-white/70 dark:bg-slate-900">未完成</button>
-                <button data-filter="done" class="filterBtn chip flex-1 rounded-xl px-3 py-2 text-sm font-semibold bg-white/70 dark:bg-slate-900">已完成</button>
+                <button data-filter="all" class="filterBtn chip flex-1 rounded-xl px-3 py-2 text-sm font-semibold bg-white/70 dark:bg-slate-900">
+                  全部
+                </button>
+                <button data-filter="open" class="filterBtn chip flex-1 rounded-xl px-3 py-2 text-sm font-semibold bg-white/70 dark:bg-slate-900">
+                  未完成
+                </button>
+                <button data-filter="done" class="filterBtn chip flex-1 rounded-xl px-3 py-2 text-sm font-semibold bg-white/70 dark:bg-slate-900">
+                  已完成
+                </button>
               </div>
             </div>
           </div>
@@ -217,7 +221,10 @@
           <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-soft border border-blue-50 dark:border-slate-800 overflow-hidden">
             <div class="p-4 flex items-center justify-between border-b border-blue-50 dark:border-slate-800">
               <div class="font-bold">設定</div>
-              <button id="closeSettings" class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-slate-800 flex items-center justify-center">
+              <button
+                id="closeSettings"
+                class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-slate-800 flex items-center justify-center"
+              >
                 <span class="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -267,19 +274,6 @@
     </div>
 
     <script>
-      /**
-       * 豪華版資料模型
-       * {
-       *   version: 2,
-       *   title: string,
-       *   filter: "all" | "open" | "done",
-       *   search: string,
-       *   sections: [
-       *     { id, name, icon, open, items: [{ id, text, done }] }
-       *   ]
-       * }
-       */
-
       const STORAGE_KEY = "hokkaido_winter_checklist_luxe_v2";
 
       const DEFAULT_DATA = {
@@ -297,8 +291,7 @@
               { id: crypto.randomUUID(), text: "⭐ 台灣駕照正本＋日文譯本（缺一不可）", done: false },
               { id: crypto.randomUUID(), text: "護照正本", done: false },
               { id: crypto.randomUUID(), text: "機票確認單", done: false },
-              { id: crypto.randomUUID(), text: "旅遊保險單", done: false }
-              // 依你要求：不放 JR Pass 兌換券
+              { id: crypto.randomUUID(), text: "旅遊保險單", done: false },
             ],
           },
           {
@@ -338,13 +331,10 @@
 
       let state = loadState();
 
-      // Theme init
       initTheme();
-
-      // Render
       renderAll();
 
-      // ---------- UI bindings ----------
+      // UI
       document.getElementById("saveBtn").addEventListener("click", () => {
         saveState(state);
         toast("已儲存");
@@ -428,9 +418,7 @@
         }
       });
 
-      // ---------- Rendering ----------
       function renderAll() {
-        // highlight active filter button
         document.querySelectorAll(".filterBtn").forEach((b) => {
           const active = b.dataset.filter === (state.filter || "all");
           b.classList.toggle("bg-primary", active);
@@ -441,11 +429,7 @@
 
         const container = document.getElementById("sections");
         container.innerHTML = "";
-
-        for (const section of state.sections) {
-          container.appendChild(renderSection(section));
-        }
-
+        for (const section of state.sections) container.appendChild(renderSection(section));
         updateProgressUI();
       }
 
@@ -486,7 +470,6 @@
         const right = document.createElement("div");
         right.className = "flex items-center gap-1";
 
-        // edit section
         const editBtn = iconButton("edit", "編輯分類");
         editBtn.addEventListener("click", (e) => {
           e.preventDefault();
@@ -494,7 +477,6 @@
           editSectionFlow(section);
         });
 
-        // delete section
         const delBtn = iconButton("delete", "刪除此分類");
         delBtn.addEventListener("click", (e) => {
           e.preventDefault();
@@ -531,7 +513,6 @@
           for (const item of visibleItems) content.appendChild(renderItem(section, item));
         }
 
-        // add row
         const addRow = document.createElement("div");
         addRow.className =
           "flex items-center gap-3 py-3 border-t border-dashed border-blue-100 dark:border-slate-800 mt-2";
@@ -579,8 +560,6 @@
         cb.addEventListener("change", () => {
           item.done = cb.checked;
           saveState(state, { silent: true });
-          updateProgressUI();
-          // refresh summary counts + filters
           renderAll();
         });
 
@@ -588,8 +567,6 @@
         text.className = "text-base text-[#0d161c] dark:text-slate-200 truncate";
         text.textContent = item.text;
         text.title = item.text;
-
-        // dblclick edit
         text.addEventListener("dblclick", () => editItemFlow(item));
 
         label.appendChild(cb);
@@ -606,11 +583,11 @@
           toast("已刪除項目");
         });
 
-        // critical mark UI
         const isCritical = isCriticalItem(item);
         if (isCritical && !item.done) {
           const badge = document.createElement("div");
-          badge.className = "chip text-[11px] px-2 py-1 rounded-full bg-blue-50/70 dark:bg-slate-800/60 text-[#0d161c] dark:text-slate-200 shrink-0";
+          badge.className =
+            "chip text-[11px] px-2 py-1 rounded-full bg-blue-50/70 dark:bg-slate-800/60 text-[#0d161c] dark:text-slate-200 shrink-0";
           badge.textContent = "關鍵";
           row.appendChild(badge);
         }
@@ -621,7 +598,6 @@
         return row;
       }
 
-      // ---------- Logic ----------
       function shouldShowItem(item, filter, search) {
         const f = filter || "all";
         if (f === "open" && item.done) return false;
@@ -652,14 +628,11 @@
         document.getElementById("progressBar").style.width = `${percent}%`;
 
         const anyCriticalOpen = allItems.some((i) => isCriticalItem(i) && !i.done);
-        const hint = document.getElementById("criticalHint");
-        hint.classList.toggle("hidden", !anyCriticalOpen);
+        document.getElementById("criticalHint").classList.toggle("hidden", !anyCriticalOpen);
 
-        // autosave status
         setAutosaveLabel("已儲存");
       }
 
-      // ---------- Flows ----------
       function addSectionFlow() {
         const name = prompt("新增分類名稱：");
         if (!name) return;
@@ -701,7 +674,6 @@
         toast("已更新項目");
       }
 
-      // ---------- Storage ----------
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -716,7 +688,6 @@
       }
 
       function normalizeState(s) {
-        // make sure required fields exist
         s.version = s.version || 2;
         s.title = s.title || "北海道冬旅清單";
         s.filter = s.filter || "all";
@@ -746,7 +717,6 @@
         }
       }
 
-      // ---------- UI helpers ----------
       function toast(msg) {
         const el = document.getElementById("toast");
         el.querySelector("div").textContent = msg;
